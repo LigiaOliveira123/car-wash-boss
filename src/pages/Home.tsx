@@ -10,15 +10,15 @@ export default function HomePage() {
   return (
     <div className="min-h-[100svh] bg-background flex flex-col">
       {/* Hero — full screen */}
-      <section className="relative flex-1 flex flex-col items-center justify-end overflow-hidden pb-12 sm:justify-center sm:pb-0">
+      <section className="relative flex-1 flex flex-col items-center justify-end overflow-hidden pb-16 sm:justify-center sm:pb-0">
         <img
           src={heroImg}
           alt="Premium car wash"
-          className="absolute inset-0 w-full h-full object-cover opacity-50"
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-40"
           width={1920}
           height={1080}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
 
         <div className="relative z-10 text-center px-6 w-full max-w-md mx-auto space-y-5">
           <img
