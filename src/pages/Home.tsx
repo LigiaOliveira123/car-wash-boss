@@ -20,7 +20,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/40 to-background" />
 
         {/* Title at top */}
-        <div className="relative z-10 text-center px-6 w-full max-w-md mx-auto pt-10 sm:pt-16">
+        <div className="relative z-10 text-center px-6 w-full max-w-md mx-auto pt-10 sm:pt-16 space-y-5">
           <div className="animate-fade-up">
             <h1 className="text-2xl sm:text-5xl font-extrabold tracking-tight text-foreground">
               Lava Car Mendes
@@ -29,21 +29,16 @@ export default function HomePage() {
               Agendamento rápido e profissional
             </p>
           </div>
-        </div>
-
-        {/* Spacer pushes button to bottom */}
-        <div className="flex-1" />
-
-        {/* Button at bottom */}
-        <div className="relative z-10 text-center px-6 w-full max-w-md mx-auto pb-10 sm:pb-16 animate-fade-up" style={{ animationDelay: '100ms' }}>
-          <Button
-            variant="hero"
-            size="xl"
-            className="w-full sm:w-auto"
-            onClick={() => navigate('/agendar')}
-          >
-            Agendar agora <ArrowRight className="w-5 h-5" />
-          </Button>
+          <div className="animate-fade-up" style={{ animationDelay: '100ms' }}>
+            <Button
+              variant="hero"
+              size="xl"
+              className="w-full sm:w-auto"
+              onClick={() => navigate('/agendar')}
+            >
+              Agendar agora <ArrowRight className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </section>
 
