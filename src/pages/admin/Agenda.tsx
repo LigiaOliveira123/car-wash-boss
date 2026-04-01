@@ -7,23 +7,21 @@ export default function AdminAgenda() {
   });
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <h2 className="text-2xl font-serif text-gradient-gold">Agenda</h2>
-      <div className="bg-card border border-border rounded-lg overflow-auto">
+    <div className="space-y-6 animate-fade-up">
+      <h2 className="text-lg font-bold text-foreground">Agenda</h2>
+      <div className="bg-card border border-border rounded-2xl overflow-auto">
         <div className="min-w-[600px]">
-          {/* Header */}
           <div className="grid grid-cols-7 border-b border-border">
             <div className="p-3 text-xs text-muted-foreground">Hora</div>
             {days.map(d => (
               <div key={d} className="p-3 text-xs font-medium text-foreground text-center">{d}</div>
             ))}
           </div>
-          {/* Grid */}
           {hours.map(h => (
             <div key={h} className="grid grid-cols-7 border-b border-border last:border-0">
               <div className="p-2 text-xs text-muted-foreground font-mono">{h}</div>
               {days.map(d => (
-                <div key={d} className="p-1 border-l border-border min-h-[40px] hover:bg-surface-hover transition-colors cursor-pointer" />
+                <div key={d} className="p-1 border-l border-border min-h-[36px] hover:bg-secondary/50 transition-colors cursor-pointer" />
               ))}
             </div>
           ))}

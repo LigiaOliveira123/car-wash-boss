@@ -1,10 +1,10 @@
-import { Car, DollarSign, CalendarDays, Clock } from 'lucide-react';
+import { Car, DollarSign, CalendarDays, Clock, TrendingUp } from 'lucide-react';
 
 const stats = [
-  { label: 'Carros Hoje', value: '12', icon: Car, color: 'text-gold' },
-  { label: 'Receita Hoje', value: 'R$ 1.240', icon: DollarSign, color: 'text-gold' },
-  { label: 'Agendamentos', value: '8', icon: CalendarDays, color: 'text-gold' },
-  { label: 'Receita Mensal', value: 'R$ 18.500', icon: DollarSign, color: 'text-gold' },
+  { label: 'Carros Hoje', value: '12', icon: Car },
+  { label: 'Receita Hoje', value: 'R$ 1.240', icon: DollarSign },
+  { label: 'Agendamentos', value: '8', icon: CalendarDays },
+  { label: 'Receita Mês', value: 'R$ 18.5k', icon: TrendingUp },
 ];
 
 const upNext = [
@@ -16,32 +16,32 @@ const upNext = [
 
 export default function AdminDashboard() {
   return (
-    <div className="space-y-6 animate-fade-in">
-      <h2 className="text-2xl font-serif text-gradient-gold">Dashboard</h2>
+    <div className="space-y-6 animate-fade-up">
+      <h2 className="text-lg font-bold text-foreground">Dashboard</h2>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {stats.map((s) => (
-          <div key={s.label} className="bg-card border border-border rounded-lg p-5">
-            <div className="flex items-center gap-3 mb-2">
-              <s.icon className={`w-5 h-5 ${s.color}`} />
-              <span className="text-sm text-muted-foreground">{s.label}</span>
+          <div key={s.label} className="bg-card border border-border rounded-2xl p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                <s.icon className="w-4 h-4 text-primary" />
+              </div>
             </div>
-            <span className="text-2xl font-bold text-foreground">{s.value}</span>
+            <span className="text-xl font-bold text-foreground">{s.value}</span>
+            <p className="text-xs text-muted-foreground mt-0.5">{s.label}</p>
           </div>
         ))}
       </div>
 
-      {/* Up Next */}
-      <div className="bg-card border border-border rounded-lg">
-        <div className="p-5 border-b border-border flex items-center gap-2">
-          <Clock className="w-5 h-5 text-gold" />
-          <h3 className="font-semibold text-foreground">Próximos Atendimentos</h3>
+      <div className="bg-card border border-border rounded-2xl">
+        <div className="px-4 py-3 border-b border-border flex items-center gap-2">
+          <Clock className="w-4 h-4 text-primary" />
+          <h3 className="text-sm font-semibold text-foreground">Próximos</h3>
         </div>
         <div className="divide-y divide-border">
           {upNext.map((item, i) => (
-            <div key={i} className="p-4 flex items-center gap-4 hover:bg-surface-hover transition-colors">
-              <span className="text-sm font-mono text-gold w-14">{item.time}</span>
+            <div key={i} className="px-4 py-3 flex items-center gap-3 hover:bg-secondary/50 transition-colors">
+              <span className="text-xs font-mono text-primary w-12">{item.time}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground truncate">{item.client}</p>
                 <p className="text-xs text-muted-foreground">{item.service}</p>

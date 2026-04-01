@@ -1,4 +1,4 @@
-import { DollarSign, TrendingUp } from 'lucide-react';
+import { TrendingUp, BarChart3 } from 'lucide-react';
 
 const monthlyData = [
   { month: 'Jan', revenue: 15200 },
@@ -20,46 +20,39 @@ export default function AdminFinanceiro() {
   const maxRevenue = Math.max(...monthlyData.map(d => d.revenue));
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <h2 className="text-2xl font-serif text-gradient-gold">Financeiro</h2>
+    <div className="space-y-6 animate-fade-up">
+      <h2 className="text-lg font-bold text-foreground">Financeiro</h2>
 
-      {/* Revenue Chart (simple bar chart) */}
-      <div className="bg-card border border-border rounded-lg p-5">
+      <div className="bg-card border border-border rounded-2xl p-5">
         <div className="flex items-center gap-2 mb-6">
-          <TrendingUp className="w-5 h-5 text-gold" />
-          <h3 className="font-semibold text-foreground">Receita Mensal</h3>
+          <BarChart3 className="w-4 h-4 text-primary" />
+          <h3 className="text-sm font-semibold text-foreground">Receita Mensal</h3>
         </div>
-        <div className="flex items-end gap-3 h-48">
+        <div className="flex items-end gap-2 h-40">
           {monthlyData.map((d) => (
-            <div key={d.month} className="flex-1 flex flex-col items-center gap-2">
-              <span className="text-xs text-muted-foreground">R$ {(d.revenue / 1000).toFixed(1)}k</span>
-              <div
-                className="w-full bg-gradient-gold rounded-t-md transition-all duration-500"
-                style={{ height: `${(d.revenue / maxRevenue) * 100}%` }}
-              />
-              <span className="text-xs text-muted-foreground">{d.month}</span>
+            <div key={d.month} className="flex-1 flex flex-col items-center gap-1.5">
+              <span className="text-[10px] text-muted-foreground">{(d.revenue / 1000).toFixed(1)}k</span>
+              <div className="w-full bg-primary rounded-lg transition-all duration-500" style={{ height: `${(d.revenue / maxRevenue) * 100}%` }} />
+              <span className="text-[10px] text-muted-foreground">{d.month}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Top Services */}
-      <div className="bg-card border border-border rounded-lg">
-        <div className="p-5 border-b border-border flex items-center gap-2">
-          <DollarSign className="w-5 h-5 text-gold" />
-          <h3 className="font-semibold text-foreground">Serviços Mais Vendidos</h3>
+      <div className="bg-card border border-border rounded-2xl">
+        <div className="px-4 py-3 border-b border-border flex items-center gap-2">
+          <TrendingUp className="w-4 h-4 text-primary" />
+          <h3 className="text-sm font-semibold text-foreground">Top Serviços</h3>
         </div>
         <div className="divide-y divide-border">
           {topServices.map((s, i) => (
-            <div key={s.name} className="p-4 flex items-center gap-4">
-              <span className="w-6 h-6 rounded-full bg-gradient-gold flex items-center justify-center text-xs font-bold text-primary-foreground">
-                {i + 1}
-              </span>
+            <div key={s.name} className="px-4 py-3 flex items-center gap-3">
+              <span className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">{i + 1}</span>
               <div className="flex-1">
                 <p className="text-sm font-medium text-foreground">{s.name}</p>
                 <p className="text-xs text-muted-foreground">{s.count} atendimentos</p>
               </div>
-              <span className="text-sm font-semibold text-gold">{s.revenue}</span>
+              <span className="text-sm font-semibold text-primary">{s.revenue}</span>
             </div>
           ))}
         </div>
