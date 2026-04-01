@@ -35,7 +35,7 @@ export default function HomePage() {
         <div className="flex-1" />
 
         {/* Button higher up — near the car wheel area */}
-        <div className="relative z-10 text-center px-6 w-full max-w-md mx-auto pb-[22vh] sm:pb-20 animate-fade-up" style={{ animationDelay: '100ms' }}>
+        <div className="relative z-10 text-center px-6 w-full max-w-md mx-auto pb-[12vh] sm:pb-20 animate-fade-up" style={{ animationDelay: '100ms' }}>
           <Button
             variant="hero"
             size="xl"
