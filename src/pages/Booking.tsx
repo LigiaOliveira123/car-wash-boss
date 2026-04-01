@@ -1,5 +1,4 @@
 import { services, vehicleTypes, calculatePrice, timeSlots } from '@/data/services';
-import type { Service, VehicleType } from '@/data/services';
 import { useBooking } from '@/hooks/useBooking';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,14 +8,14 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { ArrowLeft, ArrowRight, Check, Car, Clock, Phone, User, Palette, CreditCard } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const steps = ['Serviço', 'Veículo', 'Data & Hora', 'Dados do Carro', 'Seus Dados', 'Confirmação'];
 
 export default function BookingFlow() {
+  const navigate = useNavigate();
   const { booking, setStep, setService, setVehicleType, setDate, setTime, setVehicleDetails, setClientDetails, reset } = useBooking();
   const [confirmed, setConfirmed] = useState(false);
-
-  // Local form state for vehicle/client details
   const [plate, setPlate] = useState('');
   const [model, setModel] = useState('');
   const [color, setColor] = useState('');
@@ -29,30 +28,29 @@ export default function BookingFlow() {
 
   if (confirmed) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-4">
-        <div className="text-center space-y-6 animate-fade-in">
-          <div className="w-20 h-20 rounded-full bg-gradient-gold flex items-center justify-center mx-auto">
-            <Check className="w-10 h-10 text-primary-foreground" />
+      <div className="min-h-[100svh] flex items-center justify-center bg-background px-5">
+        <div className="text-center space-y-6 animate-fade-up max-w-sm w-full">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
+            <Check className="w-8 h-8 text-primary" />
           </div>
-          <h1 className="text-3xl font-serif text-gradient-gold">Agendamento Confirmado!</h1>
-          <p className="text-muted-foreground max-w-md mx-auto">
-            Seu agendamento foi realizado com sucesso. Aguardamos você!
-          </p>
-          <div className="bg-card rounded-lg p-6 text-left space-y-2 max-w-sm mx-auto border border-border">
-            <p className="text-sm text-muted-foreground">Serviço: <span className="text-foreground">{booking.service?.name}</span></p>
-            <p className="text-sm text-muted-foreground">Veículo: <span className="text-foreground">{booking.vehicleType?.label}</span></p>
-            <p className="text-sm text-muted-foreground">Data: <span className="text-foreground">{booking.date && format(booking.date, "dd 'de' MMMM", { locale: ptBR })}</span></p>
-            <p className="text-sm text-muted-foreground">Horário: <span className="text-foreground">{booking.time}</span></p>
-            <p className="text-sm text-muted-foreground">Valor: <span className="text-gradient-gold font-semibold">R$ {finalPrice},00</span></p>
+          <h1 className="text-2xl font-bold text-foreground">Agendamento Confirmado!</h1>
+          <p className="text-sm text-muted-foreground">Aguardamos você. Até breve!</p>
+          <div className="bg-card rounded-2xl p-5 text-left space-y-3 border border-border">
+            <Row label="Serviço" value={booking.service?.name || ''} />
+            <Row label="Veículo" value={booking.vehicleType?.label || ''} />
+            <Row label="Data" value={booking.date ? format(booking.date, "dd 'de' MMMM", { locale: ptBR }) : ''} />
+            <Row label="Horário" value={booking.time || ''} />
+            <div className="pt-3 border-t border-border flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Total</span>
+              <span className="text-lg font-bold text-primary">R$ {finalPrice},00</span>
+            </div>
           </div>
-          <div className="flex flex-col gap-3">
-            <Button variant="hero" size="lg" asChild>
-              <a href="https://wa.me/" target="_blank" rel="noopener noreferrer">
-                Voltar ao WhatsApp
-              </a>
+          <div className="space-y-3">
+            <Button variant="hero" size="lg" className="w-full" asChild>
+              <a href="https://wa.me/" target="_blank" rel="noopener noreferrer">Voltar ao WhatsApp</a>
             </Button>
-            <Button variant="ghost" onClick={() => { reset(); setConfirmed(false); }}>
-              Novo Agendamento
+            <Button variant="ghost" className="w-full" onClick={() => { reset(); setConfirmed(false); navigate('/'); }}>
+              Início
             </Button>
           </div>
         </div>
@@ -61,51 +59,54 @@ export default function BookingFlow() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Progress */}
-      <div className="sticky top-0 z-10 glass px-4 py-3">
-        <div className="max-w-2xl mx-auto">
+    <div className="min-h-[100svh] bg-background">
+      {/* Header */}
+      <div className="sticky top-0 z-10 glass">
+        <div className="max-w-lg mx-auto px-5 py-3">
           <div className="flex items-center justify-between mb-2">
-            <button onClick={() => booking.step > 0 && setStep(booking.step - 1)} className="text-muted-foreground hover:text-foreground transition-colors">
+            <button
+              onClick={() => booking.step > 0 ? setStep(booking.step - 1) : navigate('/')}
+              className="text-muted-foreground hover:text-foreground transition-colors p-1 -ml-1"
+            >
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <span className="text-sm text-muted-foreground">{steps[booking.step]}</span>
-            <span className="text-sm text-muted-foreground">{booking.step + 1}/{steps.length}</span>
+            <span className="text-xs font-medium text-muted-foreground">{steps[booking.step]}</span>
+            <span className="text-xs text-muted-foreground">{booking.step + 1}/{steps.length}</span>
           </div>
-          <div className="h-1 bg-muted rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-gold transition-all duration-500" style={{ width: `${((booking.step + 1) / steps.length) * 100}%` }} />
+          <div className="h-1 bg-secondary rounded-full overflow-hidden">
+            <div className="h-full bg-primary rounded-full transition-all duration-500 ease-out" style={{ width: `${((booking.step + 1) / steps.length) * 100}%` }} />
           </div>
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        {/* Step 0: Service Selection */}
+      <div className="max-w-lg mx-auto px-5 py-6">
+        {/* Step 0: Service */}
         {booking.step === 0 && (
-          <div className="space-y-6 animate-fade-in">
+          <div className="space-y-5 animate-fade-up">
             <div>
-              <h2 className="text-2xl font-serif text-gradient-gold">Escolha o Serviço</h2>
-              <p className="text-muted-foreground mt-1">Selecione o tipo de lavagem desejada</p>
+              <h2 className="text-xl font-bold text-foreground">Escolha o serviço</h2>
+              <p className="text-sm text-muted-foreground mt-1">Selecione a lavagem desejada</p>
             </div>
-            <div className="grid gap-4">
+            <div className="space-y-3">
               {services.map((s) => (
                 <button
                   key={s.id}
                   onClick={() => setService(s)}
-                  className="bg-card hover:bg-surface-hover border border-border hover:border-gold/30 rounded-lg p-5 text-left transition-all duration-300 group"
+                  className="w-full bg-card border border-border hover:border-primary/30 rounded-2xl p-4 text-left transition-all duration-200 group active:scale-[0.98]"
                 >
-                  <div className="flex items-start gap-4">
-                    <span className="text-3xl">{s.icon}</span>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground group-hover:text-gradient-gold transition-colors">{s.name}</h3>
-                      <p className="text-sm text-muted-foreground mt-1">{s.description}</p>
-                      <div className="flex items-center gap-3 mt-3">
-                        <span className="text-gold font-semibold">A partir de R$ {s.basePrice}</span>
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl mt-0.5">{s.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-sm text-foreground">{s.name}</h3>
+                      <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{s.description}</p>
+                      <div className="flex items-center gap-3 mt-2">
+                        <span className="text-sm font-semibold text-primary">R$ {s.basePrice}+</span>
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
-                          <Clock className="w-3 h-3" /> {s.durationMinutes} min
+                          <Clock className="w-3 h-3" />{s.durationMinutes}min
                         </span>
                       </div>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-gold transition-colors mt-1" />
+                    <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors mt-1 shrink-0" />
                   </div>
                 </button>
               ))}
@@ -115,29 +116,27 @@ export default function BookingFlow() {
 
         {/* Step 1: Vehicle Type */}
         {booking.step === 1 && (
-          <div className="space-y-6 animate-fade-in">
+          <div className="space-y-5 animate-fade-up">
             <div>
-              <h2 className="text-2xl font-serif text-gradient-gold">Tipo de Veículo</h2>
-              <p className="text-muted-foreground mt-1">O preço varia conforme o tamanho do veículo</p>
+              <h2 className="text-xl font-bold text-foreground">Tipo de veículo</h2>
+              <p className="text-sm text-muted-foreground mt-1">O preço varia por tamanho</p>
             </div>
-            <div className="grid gap-4">
+            <div className="space-y-3">
               {vehicleTypes.map((v) => (
                 <button
                   key={v.id}
                   onClick={() => setVehicleType(v)}
-                  className="bg-card hover:bg-surface-hover border border-border hover:border-gold/30 rounded-lg p-5 text-left transition-all duration-300 group"
+                  className="w-full bg-card border border-border hover:border-primary/30 rounded-2xl p-5 text-left transition-all duration-200 active:scale-[0.98]"
                 >
                   <div className="flex items-center gap-4">
-                    <span className="text-4xl">{v.icon}</span>
+                    <span className="text-3xl">{v.icon}</span>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">{v.label}</h3>
-                      <p className="text-sm text-muted-foreground">{v.description}</p>
+                      <h3 className="font-semibold text-sm text-foreground">{v.label}</h3>
+                      <p className="text-xs text-muted-foreground">{v.description}</p>
                     </div>
-                    <div className="text-right">
-                      <span className="text-gold font-semibold">
-                        R$ {booking.service ? calculatePrice(booking.service, v) : 0}
-                      </span>
-                    </div>
+                    <span className="text-base font-bold text-primary">
+                      R$ {booking.service ? calculatePrice(booking.service, v) : 0}
+                    </span>
                   </div>
                 </button>
               ))}
@@ -147,39 +146,36 @@ export default function BookingFlow() {
 
         {/* Step 2: Calendar & Time */}
         {booking.step === 2 && (
-          <div className="space-y-6 animate-fade-in">
+          <div className="space-y-5 animate-fade-up">
             <div>
-              <h2 className="text-2xl font-serif text-gradient-gold">Data & Horário</h2>
-              <p className="text-muted-foreground mt-1">Escolha o melhor dia e horário</p>
+              <h2 className="text-xl font-bold text-foreground">Data & Horário</h2>
+              <p className="text-sm text-muted-foreground mt-1">Escolha o melhor momento</p>
             </div>
-            <div className="bg-card border border-border rounded-lg p-4">
+            <div className="bg-card border border-border rounded-2xl p-3">
               <Calendar
                 mode="single"
                 selected={booking.date ?? undefined}
                 onSelect={(d) => d && setDate(d)}
                 locale={ptBR}
-                disabled={(date) => {
-                  const day = date.getDay();
-                  return day === 0 || date < new Date(new Date().setHours(0,0,0,0));
-                }}
+                disabled={(date) => date.getDay() === 0 || date < new Date(new Date().setHours(0,0,0,0))}
                 className="pointer-events-auto mx-auto"
               />
             </div>
             {booking.date && (
               <div className="space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  Horários disponíveis em {format(booking.date, "dd 'de' MMMM", { locale: ptBR })}:
+                <p className="text-xs font-medium text-muted-foreground">
+                  Horários em {format(booking.date, "dd 'de' MMMM", { locale: ptBR })}
                 </p>
-                <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+                <div className="grid grid-cols-4 gap-2">
                   {timeSlots.map((slot) => (
                     <button
                       key={slot}
                       onClick={() => setTime(slot)}
                       className={cn(
-                        "py-2 px-3 rounded-md text-sm font-medium transition-all",
+                        "py-2.5 rounded-xl text-sm font-medium transition-all duration-200 active:scale-95",
                         booking.time === slot
-                          ? "bg-gradient-gold text-primary-foreground"
-                          : "bg-muted text-muted-foreground hover:bg-surface-hover hover:text-foreground"
+                          ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                          : "bg-secondary text-muted-foreground hover:text-foreground hover:bg-surface-hover"
                       )}
                     >
                       {slot}
@@ -193,156 +189,104 @@ export default function BookingFlow() {
 
         {/* Step 3: Vehicle Details */}
         {booking.step === 3 && (
-          <div className="space-y-6 animate-fade-in">
+          <div className="space-y-5 animate-fade-up">
             <div>
-              <h2 className="text-2xl font-serif text-gradient-gold">Dados do Veículo</h2>
-              <p className="text-muted-foreground mt-1">Informe os dados do seu carro</p>
+              <h2 className="text-xl font-bold text-foreground">Dados do veículo</h2>
+              <p className="text-sm text-muted-foreground mt-1">Informe os dados do seu carro</p>
             </div>
             <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                  <Car className="w-4 h-4 text-gold" /> Placa *
-                </label>
-                <Input
-                  placeholder="ABC-1234"
-                  value={plate}
-                  onChange={(e) => setPlate(e.target.value.toUpperCase())}
-                  maxLength={8}
-                  className="bg-muted border-border"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                  <Car className="w-4 h-4 text-gold" /> Modelo *
-                </label>
-                <Input
-                  placeholder="Ex: Honda Civic 2022"
-                  value={model}
-                  onChange={(e) => setModel(e.target.value)}
-                  className="bg-muted border-border"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                  <Palette className="w-4 h-4 text-gold" /> Cor (opcional)
-                </label>
-                <Input
-                  placeholder="Ex: Preto"
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                  className="bg-muted border-border"
-                />
-              </div>
+              <FormField icon={Car} label="Placa" required>
+                <Input placeholder="ABC-1234" value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase())} maxLength={8} className="bg-secondary border-border rounded-xl h-12" />
+              </FormField>
+              <FormField icon={Car} label="Modelo" required>
+                <Input placeholder="Ex: Honda Civic 2022" value={model} onChange={(e) => setModel(e.target.value)} className="bg-secondary border-border rounded-xl h-12" />
+              </FormField>
+              <FormField icon={Palette} label="Cor" optional>
+                <Input placeholder="Ex: Preto" value={color} onChange={(e) => setColor(e.target.value)} className="bg-secondary border-border rounded-xl h-12" />
+              </FormField>
             </div>
-            <Button
-              variant="hero"
-              size="lg"
-              className="w-full"
-              disabled={!plate || !model}
-              onClick={() => setVehicleDetails(plate, model, color)}
-            >
-              Continuar <ArrowRight className="w-4 h-4 ml-2" />
+            <Button variant="hero" size="lg" className="w-full" disabled={!plate || !model} onClick={() => setVehicleDetails(plate, model, color)}>
+              Continuar <ArrowRight className="w-4 h-4" />
             </Button>
           </div>
         )}
 
         {/* Step 4: Client Details */}
         {booking.step === 4 && (
-          <div className="space-y-6 animate-fade-in">
+          <div className="space-y-5 animate-fade-up">
             <div>
-              <h2 className="text-2xl font-serif text-gradient-gold">Seus Dados</h2>
-              <p className="text-muted-foreground mt-1">Informe seus dados de contato</p>
+              <h2 className="text-xl font-bold text-foreground">Seus dados</h2>
+              <p className="text-sm text-muted-foreground mt-1">Informe seus dados de contato</p>
             </div>
             <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                  <User className="w-4 h-4 text-gold" /> Nome *
-                </label>
-                <Input
-                  placeholder="Seu nome completo"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="bg-muted border-border"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-gold" /> WhatsApp *
-                </label>
-                <Input
-                  placeholder="(11) 99999-9999"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="bg-muted border-border"
-                />
-              </div>
+              <FormField icon={User} label="Nome" required>
+                <Input placeholder="Seu nome completo" value={name} onChange={(e) => setName(e.target.value)} className="bg-secondary border-border rounded-xl h-12" />
+              </FormField>
+              <FormField icon={Phone} label="WhatsApp" required>
+                <Input placeholder="(11) 99999-9999" value={phone} onChange={(e) => setPhone(e.target.value)} className="bg-secondary border-border rounded-xl h-12" />
+              </FormField>
             </div>
-            <Button
-              variant="hero"
-              size="lg"
-              className="w-full"
-              disabled={!name || !phone}
-              onClick={() => setClientDetails(name, phone)}
-            >
-              Revisar Agendamento <ArrowRight className="w-4 h-4 ml-2" />
+            <Button variant="hero" size="lg" className="w-full" disabled={!name || !phone} onClick={() => setClientDetails(name, phone)}>
+              Revisar agendamento <ArrowRight className="w-4 h-4" />
             </Button>
           </div>
         )}
 
         {/* Step 5: Confirmation */}
         {booking.step === 5 && (
-          <div className="space-y-6 animate-fade-in">
+          <div className="space-y-5 animate-fade-up">
             <div>
-              <h2 className="text-2xl font-serif text-gradient-gold">Resumo do Agendamento</h2>
-              <p className="text-muted-foreground mt-1">Confira os dados antes de confirmar</p>
+              <h2 className="text-xl font-bold text-foreground">Resumo</h2>
+              <p className="text-sm text-muted-foreground mt-1">Confira antes de confirmar</p>
             </div>
-            <div className="bg-card border border-border rounded-lg divide-y divide-border">
-              <div className="p-4 flex justify-between">
-                <span className="text-muted-foreground">Serviço</span>
-                <span className="font-medium text-foreground">{booking.service?.name}</span>
-              </div>
-              <div className="p-4 flex justify-between">
-                <span className="text-muted-foreground">Veículo</span>
-                <span className="font-medium text-foreground">{booking.vehicleType?.label}</span>
-              </div>
-              <div className="p-4 flex justify-between">
-                <span className="text-muted-foreground">Data</span>
-                <span className="font-medium text-foreground">{booking.date && format(booking.date, "dd/MM/yyyy")}</span>
-              </div>
-              <div className="p-4 flex justify-between">
-                <span className="text-muted-foreground">Horário</span>
-                <span className="font-medium text-foreground">{booking.time}</span>
-              </div>
-              <div className="p-4 flex justify-between">
-                <span className="text-muted-foreground">Placa</span>
-                <span className="font-medium text-foreground">{booking.plate}</span>
-              </div>
-              <div className="p-4 flex justify-between">
-                <span className="text-muted-foreground">Modelo</span>
-                <span className="font-medium text-foreground">{booking.model}</span>
-              </div>
-              <div className="p-4 flex justify-between">
-                <span className="text-muted-foreground">Cliente</span>
-                <span className="font-medium text-foreground">{booking.clientName}</span>
-              </div>
+            <div className="bg-card border border-border rounded-2xl divide-y divide-border">
+              <Row label="Serviço" value={booking.service?.name || ''} />
+              <Row label="Veículo" value={booking.vehicleType?.label || ''} />
+              <Row label="Data" value={booking.date ? format(booking.date, "dd/MM/yyyy") : ''} />
+              <Row label="Horário" value={booking.time || ''} />
+              <Row label="Placa" value={booking.plate} />
+              <Row label="Modelo" value={booking.model} />
+              <Row label="Cliente" value={booking.clientName} />
               <div className="p-4 flex justify-between items-center">
-                <span className="text-muted-foreground flex items-center gap-2">
+                <span className="text-sm text-muted-foreground flex items-center gap-2">
                   <CreditCard className="w-4 h-4" /> Total
                 </span>
-                <span className="text-xl font-bold text-gradient-gold">R$ {finalPrice},00</span>
+                <span className="text-xl font-bold text-primary">R$ {finalPrice},00</span>
               </div>
             </div>
-            <Button
-              variant="hero"
-              size="lg"
-              className="w-full"
-              onClick={() => setConfirmed(true)}
-            >
-              <Check className="w-5 h-5 mr-2" /> Confirmar Agendamento
+            <Button variant="hero" size="lg" className="w-full" onClick={() => setConfirmed(true)}>
+              <Check className="w-5 h-5" /> Confirmar Agendamento
             </Button>
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="p-4 flex justify-between">
+      <span className="text-sm text-muted-foreground">{label}</span>
+      <span className="text-sm font-medium text-foreground">{value}</span>
+    </div>
+  );
+}
+
+function FormField({ icon: Icon, label, required, optional, children }: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  required?: boolean;
+  optional?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+        <Icon className="w-3.5 h-3.5 text-primary" />
+        {label} {optional && <span className="text-muted-foreground/50">(opcional)</span>}
+      </label>
+      {children}
     </div>
   );
 }
