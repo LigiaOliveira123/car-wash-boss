@@ -20,7 +20,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/40 to-background" />
 
         {/* Content pinned to top on mobile, centered on desktop */}
-        <div className="relative z-10 text-center px-6 w-full max-w-md mx-auto pt-16 sm:pt-0 sm:my-auto space-y-5">
+        <div className="relative z-10 text-center px-6 w-full max-w-md mx-auto pt-10 sm:pt-0 sm:my-auto space-y-5">
           <div className="animate-fade-up">
             <h1 className="text-2xl sm:text-5xl font-extrabold tracking-tight text-foreground">
               Lava Car Mendes
