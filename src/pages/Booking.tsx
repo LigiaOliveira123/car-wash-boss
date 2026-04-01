@@ -6,9 +6,26 @@ import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { ArrowLeft, ArrowRight, Check, Car, Clock, Phone, User, Palette, CreditCard } from 'lucide-react';
+import {
+  ArrowLeft, ArrowRight, Check, Car, CarFront, Truck,
+  Clock, Phone, User, Palette, CreditCard,
+  Droplets, Sparkles, Shield, Wind,
+} from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+const serviceIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  droplets: Droplets,
+  sparkles: Sparkles,
+  shield: Shield,
+  wind: Wind,
+};
+
+const vehicleIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  car: Car,
+  'car-front': CarFront,
+  truck: Truck,
+};
 
 const steps = ['Serviço', 'Veículo', 'Data & Hora', 'Dados do Carro', 'Seus Dados', 'Confirmação'];
 
@@ -23,8 +40,15 @@ export default function BookingFlow() {
   const [phone, setPhone] = useState('');
 
   const finalPrice = booking.service && booking.vehicleType
-    ? calculatePrice(booking.service, booking.vehicleType)
-    : 0;
+    ? calculatePrice(booking.service, booking.vehicleType) : 0;
+
+  const goBack = () => {
+    if (booking.step > 0) {
+      setStep(booking.step - 1);
+    } else {
+      navigate('/');
+    }
+  };
 
   if (confirmed) {
     return (
@@ -64,10 +88,7 @@ export default function BookingFlow() {
       <div className="sticky top-0 z-10 glass">
         <div className="max-w-lg mx-auto px-5 py-3">
           <div className="flex items-center justify-between mb-2">
-            <button
-              onClick={() => booking.step > 0 ? setStep(booking.step - 1) : navigate('/')}
-              className="text-muted-foreground hover:text-foreground transition-colors p-1 -ml-1"
-            >
+            <button onClick={goBack} className="text-muted-foreground hover:text-foreground transition-colors p-1 -ml-1">
               <ArrowLeft className="w-5 h-5" />
             </button>
             <span className="text-xs font-medium text-muted-foreground">{steps[booking.step]}</span>
@@ -88,28 +109,33 @@ export default function BookingFlow() {
               <p className="text-sm text-muted-foreground mt-1">Selecione a lavagem desejada</p>
             </div>
             <div className="space-y-3">
-              {services.map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => setService(s)}
-                  className="w-full bg-card border border-border hover:border-primary/30 rounded-2xl p-4 text-left transition-all duration-200 group active:scale-[0.98]"
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="text-2xl mt-0.5">{s.icon}</span>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-sm text-foreground">{s.name}</h3>
-                      <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{s.description}</p>
-                      <div className="flex items-center gap-3 mt-2">
-                        <span className="text-sm font-semibold text-primary">R$ {s.basePrice}+</span>
-                        <span className="text-xs text-muted-foreground flex items-center gap-1">
-                          <Clock className="w-3 h-3" />{s.durationMinutes}min
-                        </span>
+              {services.map((s) => {
+                const Icon = serviceIcons[s.icon] || Droplets;
+                return (
+                  <button
+                    key={s.id}
+                    onClick={() => setService(s)}
+                    className="w-full bg-card border border-border hover:border-primary/30 rounded-2xl p-4 text-left transition-all duration-200 group active:scale-[0.98]"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <Icon className="w-5 h-5 text-primary" />
                       </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-sm text-foreground">{s.name}</h3>
+                        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{s.description}</p>
+                        <div className="flex items-center gap-3 mt-2">
+                          <span className="text-sm font-semibold text-primary">R$ {s.basePrice}+</span>
+                          <span className="text-xs text-muted-foreground flex items-center gap-1">
+                            <Clock className="w-3 h-3" />{s.durationMinutes}min
+                          </span>
+                        </div>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors mt-1 shrink-0" />
                     </div>
-                    <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors mt-1 shrink-0" />
-                  </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -122,24 +148,29 @@ export default function BookingFlow() {
               <p className="text-sm text-muted-foreground mt-1">O preço varia por tamanho</p>
             </div>
             <div className="space-y-3">
-              {vehicleTypes.map((v) => (
-                <button
-                  key={v.id}
-                  onClick={() => setVehicleType(v)}
-                  className="w-full bg-card border border-border hover:border-primary/30 rounded-2xl p-5 text-left transition-all duration-200 active:scale-[0.98]"
-                >
-                  <div className="flex items-center gap-4">
-                    <span className="text-3xl">{v.icon}</span>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-sm text-foreground">{v.label}</h3>
-                      <p className="text-xs text-muted-foreground">{v.description}</p>
+              {vehicleTypes.map((v) => {
+                const Icon = vehicleIcons[v.icon] || Car;
+                return (
+                  <button
+                    key={v.id}
+                    onClick={() => setVehicleType(v)}
+                    className="w-full bg-card border border-border hover:border-primary/30 rounded-2xl p-5 text-left transition-all duration-200 active:scale-[0.98]"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                        <Icon className="w-6 h-6 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-sm text-foreground">{v.label}</h3>
+                        <p className="text-xs text-muted-foreground">{v.description}</p>
+                      </div>
+                      <span className="text-base font-bold text-primary">
+                        R$ {booking.service ? calculatePrice(booking.service, v) : 0}
+                      </span>
                     </div>
-                    <span className="text-base font-bold text-primary">
-                      R$ {booking.service ? calculatePrice(booking.service, v) : 0}
-                    </span>
-                  </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -195,10 +226,10 @@ export default function BookingFlow() {
               <p className="text-sm text-muted-foreground mt-1">Informe os dados do seu carro</p>
             </div>
             <div className="space-y-4">
-              <FormField icon={Car} label="Placa" required>
+              <FormField icon={Car} label="Placa">
                 <Input placeholder="ABC-1234" value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase())} maxLength={8} className="bg-secondary border-border rounded-xl h-12" />
               </FormField>
-              <FormField icon={Car} label="Modelo" required>
+              <FormField icon={Car} label="Modelo">
                 <Input placeholder="Ex: Honda Civic 2022" value={model} onChange={(e) => setModel(e.target.value)} className="bg-secondary border-border rounded-xl h-12" />
               </FormField>
               <FormField icon={Palette} label="Cor" optional>
@@ -219,10 +250,10 @@ export default function BookingFlow() {
               <p className="text-sm text-muted-foreground mt-1">Informe seus dados de contato</p>
             </div>
             <div className="space-y-4">
-              <FormField icon={User} label="Nome" required>
+              <FormField icon={User} label="Nome">
                 <Input placeholder="Seu nome completo" value={name} onChange={(e) => setName(e.target.value)} className="bg-secondary border-border rounded-xl h-12" />
               </FormField>
-              <FormField icon={Phone} label="WhatsApp" required>
+              <FormField icon={Phone} label="WhatsApp">
                 <Input placeholder="(11) 99999-9999" value={phone} onChange={(e) => setPhone(e.target.value)} className="bg-secondary border-border rounded-xl h-12" />
               </FormField>
             </div>
@@ -273,10 +304,9 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-function FormField({ icon: Icon, label, required, optional, children }: {
+function FormField({ icon: Icon, label, optional, children }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
-  required?: boolean;
   optional?: boolean;
   children: React.ReactNode;
 }) {
