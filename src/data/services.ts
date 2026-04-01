@@ -6,7 +6,7 @@ export interface Service {
   description: string;
   basePrice: number;
   durationMinutes: number;
-  icon: string;
+  icon: string; // lucide icon name
 }
 
 export interface VehicleType {
@@ -24,7 +24,7 @@ export const services: Service[] = [
     description: 'Lavagem externa completa com shampoo automotivo e secagem.',
     basePrice: 40,
     durationMinutes: 30,
-    icon: '💧',
+    icon: 'droplets',
   },
   {
     id: 'completa',
@@ -32,7 +32,7 @@ export const services: Service[] = [
     description: 'Lavagem externa e interna, aspiração, painel e vidros.',
     basePrice: 70,
     durationMinutes: 60,
-    icon: '✨',
+    icon: 'sparkles',
   },
   {
     id: 'cera',
@@ -40,7 +40,7 @@ export const services: Service[] = [
     description: 'Lavagem completa com aplicação de cera protetora de longa duração.',
     basePrice: 100,
     durationMinutes: 90,
-    icon: '🛡️',
+    icon: 'shield',
   },
   {
     id: 'higienizacao',
@@ -48,7 +48,7 @@ export const services: Service[] = [
     description: 'Higienização profunda do interior, bancos, carpetes e ar-condicionado.',
     basePrice: 150,
     durationMinutes: 120,
-    icon: '🧹',
+    icon: 'wind',
   },
 ];
 
@@ -58,21 +58,21 @@ export const vehicleTypes: VehicleType[] = [
     label: 'Pequeno (Hatch)',
     description: 'Gol, Onix, HB20, Argo',
     priceMultiplier: 1.0,
-    icon: '🚗',
+    icon: 'car',
   },
   {
     id: 'sedan',
     label: 'Médio (Sedan)',
     description: 'Civic, Corolla, Cruze, Virtus',
     priceMultiplier: 1.3,
-    icon: '🚙',
+    icon: 'car-front',
   },
   {
     id: 'suv',
     label: 'Grande (SUV/Caminhonete)',
     description: 'Compass, Tracker, Hilux, Ranger',
     priceMultiplier: 1.6,
-    icon: '🚐',
+    icon: 'truck',
   },
 ];
 
