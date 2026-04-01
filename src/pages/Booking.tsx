@@ -227,7 +227,7 @@ export default function BookingFlow() {
             </div>
             <div className="space-y-4">
               <FormField icon={Car} label="Placa">
-                <Input placeholder="ABC-1234" value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase())} maxLength={8} className="bg-secondary border-border rounded-xl h-12" />
+                <Input placeholder="ABC-1234 ou ABC1D23" value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, ''))} maxLength={8} className="bg-secondary border-border rounded-xl h-12" />
               </FormField>
               <FormField icon={Car} label="Modelo">
                 <Input placeholder="Ex: Honda Civic 2022" value={model} onChange={(e) => setModel(e.target.value)} className="bg-secondary border-border rounded-xl h-12" />
