@@ -186,10 +186,10 @@ export default function BookingFlow() {
               <Calendar
                 mode="single"
                 selected={booking.date ?? undefined}
-                onSelect={(d) => setDate(d as Date)}
+                onSelect={(d) => { if (d) setDate(d); }}
                 locale={ptBR}
                 disabled={(date) => date.getDay() === 0 || date < new Date(new Date().setHours(0,0,0,0))}
-                className="pointer-events-auto mx-auto [&_.rdp-day]:text-foreground [&_.rdp-head_cell]:text-muted-foreground [&_.rdp-caption_label]:text-foreground"
+                className="pointer-events-auto mx-auto"
               />
             </div>
             {booking.date && (

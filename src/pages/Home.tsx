@@ -14,21 +14,14 @@ export default function HomePage() {
         <img
           src={heroImg}
           alt="Premium car wash"
-          className="absolute inset-0 w-full h-full object-cover object-center opacity-40"
+          className="absolute inset-0 w-full h-full object-cover object-[center_60%] sm:object-center opacity-35"
           width={1920}
           height={1080}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20" />
 
         <div className="relative z-10 text-center px-6 w-full max-w-md mx-auto space-y-5">
-          <img
-            src={logoImg}
-            alt="Lava Car Mendes"
-            className="w-20 h-20 mx-auto drop-shadow-2xl animate-fade-up"
-            width={512}
-            height={512}
-          />
-          <div className="animate-fade-up" style={{ animationDelay: '100ms' }}>
+          <div className="animate-fade-up">
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground">
               Lava Car Mendes
             </h1>
@@ -36,7 +29,7 @@ export default function HomePage() {
               Agendamento rápido e profissional
             </p>
           </div>
-          <div className="animate-fade-up" style={{ animationDelay: '200ms' }}>
+          <div className="animate-fade-up" style={{ animationDelay: '100ms' }}>
             <Button
               variant="hero"
               size="xl"
